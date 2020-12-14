@@ -1,0 +1,7 @@
+version: "3.9"
+services:
+  lisandes:
+    build: .
+    image: lisandes
+    volumes:
+      - ./config/elasticsearch.yml:/elasticsearch.yml
