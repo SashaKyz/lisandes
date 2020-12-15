@@ -1,6 +1,7 @@
 import jaydebeapi;
 from elasticsearch import Elasticsearch;
 import yaml;
+from datetime import datetime;
 
 
 class GetItemCount:
@@ -39,23 +40,24 @@ class GetItemCount:
         return self.es_numbers
 
     def ShowItemCount_ES(self):
-        print("ElasticSearch shows {} items".format(self.es_numbers))
+        print("{} records in the ElasticSearch".format(self.es_numbers))
 
     def ShowItemCount_LIS(self):
-        print("LIS database shows {} items".format(self.lis_numbers))
+        print("{} records in the LIS database".format(self.lis_numbers))
 
     def ShowItemCount(self):
         self.ShowItemCount_ES()
         self.ShowItemCount_LIS()
 
     def ItemCompare_ES_LIS(self):
-        print("ElasticSearch shows {} items and LIS database shows {} items".format(self.es_numbers, self.lis_numbers))
+        print("Status for:",datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
+        print("{} records in the ElasticSearch and {} records in the LIS database".format(self.es_numbers, self.lis_numbers))
         if (self.es_numbers > self.lis_numbers):
-            print("ElasticSearch have more records that LIS")
+            print("ElasticSearch has more records that LIS database")
         elif (self.es_numbers < self.lis_numbers):
-            print("ElasticSearch have less records that LIS")
+            print("ElasticSearch has less records that LIS database")
         else:
-            print("ElasticSearch have the same number of records that LIS")
+            print("ElasticSearch has the same number of records as LIS database")
 
     def __init__(self, fname="elasticsearch.yml"):
         self.filename = fname
