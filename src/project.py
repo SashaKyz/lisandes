@@ -72,7 +72,7 @@ class GetItemCount:
         )
         response = client.send_email(
             Destination={
-                'ToAddresses': ['alex.kuznetsov@osi.ca.gov'],
+                'ToAddresses': ['alex.kuznetsov@osi.ca.gov','CWDSDevOpsEngineering@osi.ca.gov'],
             },
             Message={
                 'Body': {
