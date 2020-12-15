@@ -5,3 +5,7 @@ services:
     image: lisandes
     volumes:
       - ./config/elasticsearch.yml:/elasticsearch.yml
+    environment:
+      DEBUG_COLORS: "true"
+      TERM: xterm-256color
+      COLORTERM: truecolor
