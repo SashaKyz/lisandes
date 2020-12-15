@@ -51,25 +51,28 @@ class GetItemCount:
         self.ShowItemCount_LIS()
 
     def ItemCompare_ES_LIS(self):
-        self.statusMessage = "Status for: " + datetime.now().strftime("%d/%m/%Y %H:%M:%S") + "\n{} records in the ElasticSearch and {} records in the LIS database".format(self.es_numbers, self.lis_numbers)
+        self.statusMessage = "Status for: {}\n{} records in the ElasticSearch and {} records in the LIS database".format(datetime.now().strftime("%d/%m/%Y %H:%M:%S"),self.es_numbers, self.lis_numbers)
         if (self.es_numbers > self.lis_numbers):
             self.statusMessage += "\nElasticSearch has more records that LIS database"
-            self.statusTopic = "ElasticSearch has more records that LIS database"
+            self.statusTopic = "{} ElasticSearch has more records that LIS database".format(datetime.now().strftime("%m/%d/%Y"))
         elif (self.es_numbers < self.lis_numbers):
             self.statusMessage += "\nElasticSearch has less records that LIS database"
-            self.statusTopic = "ElasticSearch has less records that LIS database"
+            self.statusTopic = "{} ElasticSearch has less records that LIS database".format(datetime.now().strftime("%m/%d/%Y"))
         else:
             self.statusMessage +=  "\nElasticSearch has the same number of records as LIS database"
-            self.statusTopic = "ElasticSearch has the same number of records as LIS database"
+            self.statusTopic = "{} ElasticSearch has the same number of records as LIS database".format(datetime.now().strftime("%m/%d/%Y"))
         print(self.statusMessage)
 
     def ItemCompare_ES_LIS_Email(self):
+        if not (hasattr(self,'statusTopic') and (self.statusTopic != '')):
+            self.ItemCompare_ES_LIS()
         client = boto3.client(
-            'ses'
+            'ses',
+            region_name='us-west-2'
         )
         response = client.send_email(
             Destination={
-                'ToAddresses': ['alex.kuznetsov@osi.ca.gov', 'CWDSDevOpsEngineering@osi.ca.gov'],
+                'ToAddresses': ['alex.kuznetsov@osi.ca.gov'],
             },
             Message={
                 'Body': {
@@ -93,4 +96,5 @@ class GetItemCount:
         self.es_number = self.GetItemCount_ES()
 
 Item_count=GetItemCount("/elasticsearch.yml")
-Item_count.ItemCompare_ES_LIS()
+#Item_count.ItemCompare_ES_LIS()
+Item_count.ItemCompare_ES_LIS_Email()
