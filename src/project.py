@@ -2,6 +2,7 @@ import jaydebeapi;
 from elasticsearch import Elasticsearch;
 import yaml;
 from datetime import datetime;
+import boto3;
 
 
 class GetItemCount:
@@ -50,14 +51,40 @@ class GetItemCount:
         self.ShowItemCount_LIS()
 
     def ItemCompare_ES_LIS(self):
-        print("Status for:",datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
-        print("{} records in the ElasticSearch and {} records in the LIS database".format(self.es_numbers, self.lis_numbers))
+        self.statusMessage = "Status for: " + datetime.now().strftime("%d/%m/%Y %H:%M:%S") + "\n{} records in the ElasticSearch and {} records in the LIS database".format(self.es_numbers, self.lis_numbers)
         if (self.es_numbers > self.lis_numbers):
-            print("ElasticSearch has more records that LIS database")
+            self.statusMessage += "\nElasticSearch has more records that LIS database"
+            self.statusTopic = "ElasticSearch has more records that LIS database"
         elif (self.es_numbers < self.lis_numbers):
-            print("ElasticSearch has less records that LIS database")
+            self.statusMessage += "\nElasticSearch has less records that LIS database"
+            self.statusTopic = "ElasticSearch has less records that LIS database"
         else:
-            print("ElasticSearch has the same number of records as LIS database")
+            self.statusMessage +=  "\nElasticSearch has the same number of records as LIS database"
+            self.statusTopic = "ElasticSearch has the same number of records as LIS database"
+        print(self.statusMessage)
+
+    def ItemCompare_ES_LIS_Email(self):
+        client = boto3.client(
+            'ses'
+        )
+        response = client.send_email(
+            Destination={
+                'ToAddresses': ['alex.kuznetsov@osi.ca.gov', 'CWDSDevOpsEngineering@osi.ca.gov'],
+            },
+            Message={
+                'Body': {
+                    'Text': {
+                        'Charset': 'UTF-8',
+                        'Data': self.statusMessage,
+                    },
+                },
+                'Subject': {
+                    'Charset': 'UTF-8',
+                    'Data': self.statusTopic,
+                },
+            },
+            Source='CWDSDevOpsEngineering@osi.ca.gov',
+        )
 
     def __init__(self, fname="elasticsearch.yml"):
         self.filename = fname

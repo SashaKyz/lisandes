@@ -1,3 +1,4 @@
 jaydebeapi
 elasticsearch
 pyyaml
+boto3
