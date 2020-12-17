@@ -26,16 +26,7 @@ pipeline {
 				sh 'mkdir -p config'
 				sshGet remote: remote, from: '/opt/rundeck/jobs/jobs-facilities-lis/current/config/elasticsearch.yml', into: 'config/elasticsearch.yml', override: true
 				withCredentials([usernamePassword(credentialsId: '212dd917-62a9-45ae-9b6f-3eb0de725a5a', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
-					sh 'docker-compose up --build'
-				}
-				sh 'rm -rf config'
-			}
-
-		}
-		stage('Push to registry') {
-			steps {
-				withCredentials([usernamePassword(credentialsId: '212dd917-62a9-45ae-9b6f-3eb0de725a5a', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
-					sh 'docker-compose push'
+					sh 'docker-compose up'
 				}
 			}
 
