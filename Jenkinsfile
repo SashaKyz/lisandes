@@ -1,13 +1,13 @@
 def remote = [:]
 remote.name = 'Rundeck'
-remote.host = 'rundeck.'+ params['env-name'] +'.cwds.io'
+remote.host = 'rundeck.integration.cwds.io'
 remote.user = 'ansible'
 remote.identityFile = '~/.ssh/id_ansible'
 remote.allowAnyHosts = true
 
 pipeline {
 	agent {
-	    label params['env-name']
+	    label 'integration'
     }
     options {
         ansiColor('xterm')
@@ -33,12 +33,7 @@ pipeline {
 
 		}
 		stage('Push to registry') {
-			steps {
-				withCredentials([usernamePassword(credentialsId: '212dd917-62a9-45ae-9b6f-3eb0de725a5a', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
 					sh 'docker-compose push'
-				}
-			}
-
 		}
 	}
 }
