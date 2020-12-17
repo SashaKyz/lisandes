@@ -1,44 +1,18 @@
 def remote = [:]
 remote.name = 'Rundeck'
-remote.host = 'rundeck.'+ params['agent-name'] +'.cwds.io'
+remote.host = 'rundeck.'+ params['env-name'] +'.cwds.io'
 remote.user = 'ansible'
 remote.identityFile = '~/.ssh/id_ansible'
 remote.allowAnyHosts = true
 
 pipeline {
 	agent {
-	    label params['agent-name']
+	    label params['env-name']
     }
     options {
         ansiColor('xterm')
         timestamps()
     }
-    properties(
-        [
-            [
-                $class: 'RebuildSettings',
-                autoRebuild: false,
-                rebuildDisabled: false
-            ],
-            parameters(
-                [
-                    [
-                        $class: 'NodeParameterDefinition',
-                        allowedSlaves: ['integration', 'preint', 'training'],
-                        defaultSlaves: ['integration'],
-                        description: '',
-                        name: 'agent-name',
-                        nodeEligibility: [$class: 'AllNodeEligibility'],
-                        triggerIfResult: 'multiSelectionDisallowed'
-                    ]
-                ]
-            ),
-            pipelineTriggers(
-                [cron('H  H(6-8) * * 1 ')]
-            )
-        ]
-    )
-
 	stages {
 		stage('Preparation') {
 			steps {
