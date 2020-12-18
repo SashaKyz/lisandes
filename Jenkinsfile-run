@@ -1,13 +1,13 @@
 def remote = [:]
 remote.name = 'Rundeck'
-remote.host = 'rundeck.'+ params['env-name'] +'.cwds.io'
+remote.host = 'rundeck.'+ params['envname'] +'.cwds.io'
 remote.user = 'ansible'
 remote.identityFile = '~/.ssh/id_ansible'
 remote.allowAnyHosts = true
 
 pipeline {
 	agent {
-	    label params['env-name']
+	    label params['envname']
     }
     options {
         ansiColor('xterm')
