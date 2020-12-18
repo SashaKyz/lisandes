@@ -1,8 +1,9 @@
-import jaydebeapi;
-from elasticsearch import Elasticsearch;
-import yaml;
-from datetime import datetime;
-import boto3;
+import jaydebeapi
+from elasticsearch import Elasticsearch
+import yaml
+from datetime import datetime
+import boto3
+import os
 
 
 class GetItemCount:
@@ -13,6 +14,7 @@ class GetItemCount:
         self.LIS_query = "SELECT COUNT(*) FROM " + self.config['lisDataSourceFactory']['properties'][
             'hibernate.default_catalog'] + "." + self.config['lisDataSourceFactory']['properties'][
                              'hibernate.default_schema'] + ".lis_fac_file lisfacfile0_ WHERE lisfacfile0_.fac_type IN  (400, 403, 430, 431, 433, 710, 711, 720, 721, 722, 726, 728, 729, 730, 731, 732, 733);"
+        self.envname =  os.environ.get('RUN_ENV','TEST-ONLY')
 
     def GetItemCount_LIS(self):
         conn = jaydebeapi.connect(
@@ -51,16 +53,16 @@ class GetItemCount:
         self.ShowItemCount_LIS()
 
     def ItemCompare_ES_LIS(self):
-        self.statusMessage = "Status for: {}\n{} records in the ElasticSearch and {} records in the LIS database".format(datetime.now().strftime("%d/%m/%Y %H:%M:%S"),self.es_numbers, self.lis_numbers)
+        self.statusMessage = "Status for: {} at {}\n{} records in the ElasticSearch and {} records in the LIS database".format(self.envname,datetime.now().strftime("%d/%m/%Y %H:%M:%S"),self.es_numbers, self.lis_numbers)
         if (self.es_numbers > self.lis_numbers):
             self.statusMessage += "\nElasticSearch has more records that LIS database"
-            self.statusTopic = "{} ElasticSearch has more records that LIS database".format(datetime.now().strftime("%m/%d/%Y"))
+            self.statusTopic = "ENV: {} date {} ElasticSearch has more records that LIS database".format(self.envname,datetime.now().strftime("%m/%d/%Y"))
         elif (self.es_numbers < self.lis_numbers):
             self.statusMessage += "\nElasticSearch has less records that LIS database"
-            self.statusTopic = "{} ElasticSearch has less records that LIS database".format(datetime.now().strftime("%m/%d/%Y"))
+            self.statusTopic = "ENV: {} date {} ElasticSearch has less records that LIS database".format(self.envname,datetime.now().strftime("%m/%d/%Y"))
         else:
             self.statusMessage +=  "\nElasticSearch has the same number of records as LIS database"
-            self.statusTopic = "{} ElasticSearch has the same number of records as LIS database".format(datetime.now().strftime("%m/%d/%Y"))
+            self.statusTopic = "ENV: {} date {} ElasticSearch has the same number of records as LIS database".format(self.envname,datetime.now().strftime("%m/%d/%Y"))
         print(self.statusMessage)
 
     def ItemCompare_ES_LIS_Email(self):
