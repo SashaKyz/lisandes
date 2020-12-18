@@ -27,7 +27,7 @@ pipeline {
 				sshGet remote: remote, from: '/opt/rundeck/jobs/jobs-facilities-lis/current/config/elasticsearch.yml', into: 'config/elasticsearch.yml', override: true
 				withCredentials([usernamePassword(credentialsId: '212dd917-62a9-45ae-9b6f-3eb0de725a5a', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
 					sh 'docker-compose pull'
-					sh 'docker-compose run --rm'
+					sh 'docker-compose run --rm lisandes'
 				}
 			}
 
