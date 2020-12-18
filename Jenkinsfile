@@ -15,11 +15,14 @@ pipeline {
 			}
 		}
 		stage('Build') {
-		    sh 'docker-compose build'
-
+		    steps {
+		        sh 'docker-compose build'
+		    }
 		}
 		stage('Push to registry') {
-			sh 'docker-compose push'
+		    steps {
+			    sh 'docker-compose push'
+			}
 		}
 	}
 }
